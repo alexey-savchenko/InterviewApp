@@ -27,7 +27,27 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
   var movieOutput: AVCaptureMovieFileOutput!
 
   var questionQueue: [String]!
-  var currentQuestionIndex = 0
+  var currentQuestionIndex = 0 {
+
+    didSet{
+
+      if currentQuestionIndex == (questionQueue.count - 1) {
+
+        UIView.animate(withDuration: 0.5, animations: {
+          self.nextButton.layer.opacity = 0
+        }, completion: { (_) in
+          UIView.animate(withDuration: 0.5, animations: {
+            self.actionButton.layer.opacity = 1
+            self.actionButton.setTitle("Finish", for: .normal)
+
+          })
+        })
+
+      }
+
+    }
+
+  }
 
   var actionButton: CustomButton!
   var nextButton: CustomButton!
@@ -35,6 +55,7 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
   var previewView: UIView!
   var overlayView: UIView!
   var questionOverlayView: UIView!
+  var questionLabel: UILabel!
 
   var status = RecordingStatus.idle {
 
@@ -101,14 +122,34 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
           self.nextButton.layer.opacity = 1
         })
 
-        movieOutput.startRecording(toOutputFileURL: getDocumentsDirectory().appendingPathComponent("video.mov"),
-                                   recordingDelegate: self)
+        FileManager.default.checkFileAndDeleteAtURL(getDocumentsDirectory().appendingPathComponent("video.mov"),
+                                                    completion: {
+                                                      self.movieOutput.startRecording(toOutputFileURL: self.getDocumentsDirectory().appendingPathComponent("video.mov"),
+                                                                                      recordingDelegate: self)
+        })
 
+        UIView.animate(withDuration: 0.5, animations: {
+          self.questionOverlayView.layer.opacity = 0.5
+        }, completion: { (_) in
+          self.setQuestionWithIndex(0)
+        })
+
+      case .finished:
+        movieOutput.stopRecording()
+        UIView.animate(withDuration: 1, animations: { 
+          self.questionOverlayView.layer.opacity = 0
+        })
 
       default:
         break
       }
     }
+  }
+
+  func setQuestionWithIndex(_ index: Int) {
+
+    questionLabel.text = questionQueue[index]
+
   }
 
   override func viewDidLoad() {
@@ -161,6 +202,23 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
     nextButton.layer.opacity = 0
     view.addSubview(nextButton)
 
+    questionOverlayView = UIView()
+    questionOverlayView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height * 0.3)
+    questionOverlayView.backgroundColor = UIColor.black
+    questionOverlayView.alpha = 0.5
+
+    questionLabel = UILabel()
+    questionLabel.frame = CGRect(x: 20, y: 20, width: questionOverlayView.bounds.width - 40, height: questionOverlayView.bounds.height - 40)
+    questionLabel.textColor = UIColor.white
+    questionOverlayView.addSubview(questionLabel)
+    questionLabel.font = UIFont.boldSystemFont(ofSize: 26)
+    questionLabel.text = ""
+    questionLabel.numberOfLines = 0
+//    questionLabel.layer.opacity = 0
+    questionOverlayView.layer.opacity = 0
+
+    view.insertSubview(questionOverlayView, belowSubview: actionButton)
+
   }
 
   func actionButtonTap(){
@@ -168,6 +226,8 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
     switch status {
     case .idle:
       status = .begin
+    case .recording:
+      status = .finished
     default:
       break
     }
@@ -176,7 +236,9 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
 
   func nextButtonTap(){
 
+    currentQuestionIndex += 1
 
+    setQuestionWithIndex(currentQuestionIndex)
 
   }
 
@@ -273,47 +335,47 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
 
   }
 
-  @IBAction func buttontap(_ sender: UIButton) {
-    movieOutput.stopRecording()
-    do {
-
-      print("Contents of Doc folder \(try FileManager.default.contentsOfDirectory(atPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!))")
-      if FileManager.default.fileExists(atPath: getDocumentsDirectory().appendingPathComponent("video.mov").path) {
-
-        let size = try! FileManager.default.attributesOfItem(atPath: getDocumentsDirectory().appendingPathComponent("video.mov").path)[FileAttributeKey.size] as! UInt64
-        print(size)
-
-
-      } else {
-
-        print("no file")
-
-      }
-    } catch {
-
-      print(error)
-
-    }
-  }
+  //  @IBAction func buttontap(_ sender: UIButton) {
+  //    movieOutput.stopRecording()
+  //    do {
+  //
+  //      print("Contents of Doc folder \(try FileManager.default.contentsOfDirectory(atPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!))")
+  //      if FileManager.default.fileExists(atPath: getDocumentsDirectory().appendingPathComponent("video.mov").path) {
+  //
+  //        let size = try! FileManager.default.attributesOfItem(atPath: getDocumentsDirectory().appendingPathComponent("video.mov").path)[FileAttributeKey.size] as! UInt64
+  //        print(size)
+  //
+  //
+  //      } else {
+  //
+  //        print("no file")
+  //
+  //      }
+  //    } catch {
+  //
+  //      print(error)
+  //
+  //    }
+  //  }
 
   func capture(_ captureOutput: AVCaptureFileOutput!,
                didStartRecordingToOutputFileAt fileURL: URL!,
                fromConnections connections: [Any]!) {
-    print("22")
+    print("didStartRecordingToOutputFileAt")
   }
 
 
   func capture(_ captureOutput: AVCaptureFileOutput!,
                didFinishRecordingToOutputFileAt outputFileURL: URL!,
                fromConnections connections: [Any]!, error: Error!) {
-    print("23")
-    let player = AVPlayer(playerItem: AVPlayerItem.init(url: URL(fileURLWithPath: getDocumentsDirectory().appendingPathComponent("video.mov").path)))
-    let plContr = AVPlayerViewController()
-    plContr.player = player
-    self.present(plContr, animated: true) {
-      print("presented")
-      plContr.player?.play()
-    }
+    print("didFinishRecordingToOutputFileAt")
+    //    let player = AVPlayer(playerItem: AVPlayerItem.init(url: URL(fileURLWithPath: getDocumentsDirectory().appendingPathComponent("video.mov").path)))
+    //    let plContr = AVPlayerViewController()
+    //    plContr.player = player
+    //    self.present(plContr, animated: true) {
+    //      print("presented")
+    //      plContr.player?.play()
+    //    }
     
   }
   
