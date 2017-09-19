@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0289C8241F71161300E2C26E /* CustomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0289C8231F71161300E2C26E /* CustomButton.swift */; };
 		357446749AC063C323889BB5 /* Pods_interviewCameraApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57F24ABF2C3E23C6DA282F60 /* Pods_interviewCameraApp.framework */; };
 		8069283C1F703CA9001C576A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8069283B1F703CA9001C576A /* AppDelegate.swift */; };
 		8069283E1F703CA9001C576A /* VideoRecorderVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8069283D1F703CA9001C576A /* VideoRecorderVC.swift */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0289C8231F71161300E2C26E /* CustomButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomButton.swift; sourceTree = "<group>"; };
 		57F24ABF2C3E23C6DA282F60 /* Pods_interviewCameraApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_interviewCameraApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		806928381F703CA9001C576A /* interviewCameraApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = interviewCameraApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8069283B1F703CA9001C576A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -78,6 +80,7 @@
 				8069283D1F703CA9001C576A /* VideoRecorderVC.swift */,
 				8069283F1F703CA9001C576A /* Main.storyboard */,
 				806928451F703CA9001C576A /* Assets.xcassets */,
+				0289C8231F71161300E2C26E /* CustomButton.swift */,
 				806928471F703CA9001C576A /* LaunchScreen.storyboard */,
 				8069284A1F703CA9001C576A /* Info.plist */,
 				806928421F703CA9001C576A /* interviewCameraApp.xcdatamodeld */,
@@ -228,6 +231,7 @@
 				806928511F70F157001C576A /* QuestionsTVC.swift in Sources */,
 				8069283E1F703CA9001C576A /* VideoRecorderVC.swift in Sources */,
 				8069283C1F703CA9001C576A /* AppDelegate.swift in Sources */,
+				0289C8241F71161300E2C26E /* CustomButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

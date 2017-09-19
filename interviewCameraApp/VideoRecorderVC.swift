@@ -12,19 +12,66 @@ import AVKit
 
 class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureFileOutputRecordingDelegate {
 
+  enum RecordingStatus {
+
+    case idle
+    case begin
+    case recording
+    case finished
+
+  }
+
   let captureSession = AVCaptureSession()
   var previewLayer: CALayer!
   var captureDevice: AVCaptureDevice!
   var movieOutput: AVCaptureMovieFileOutput!
   var questionQueue: [String]!
+  var actionButton: CustomButton!
 
-
+  var status = RecordingStatus.idle {
+    didSet {
+      print(status)
+    }
+  }
 
   override func viewDidLoad() {
     super.viewDidLoad()
     prepareCamera()
 
-    
+    actionButton = CustomButton(frame: CGRect.init(x: 0, y: 0, width: 150, height: 40))
+    actionButton.center.x = view.center.x
+    actionButton.center.y = view.bounds.height - 100
+    actionButton.setTitle("Begin", for: .normal)
+    actionButton.cornerRadius = 20
+    actionButton.borderWidth = 1
+    actionButton.borderColor = UIColor.white
+    actionButton.addTarget(self, action: #selector(actionButtonTap), for: .touchUpInside)
+
+    view.addSubview(actionButton)
+    view.bringSubview(toFront: actionButton)
+
+
+
+  }
+
+  func actionButtonTap(){
+    print("!!!")
+    status = .begin
+  }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+
+    navigationController?.setNavigationBarHidden(true, animated: true)
+
+    addObserver(self, forKeyPath: "self.status", options: [.new], context: nil)
+
+  }
+
+  override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+    if keyPath == "self.status" {
+      print("@@@@@@")
+    }
   }
 
 

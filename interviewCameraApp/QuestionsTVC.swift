@@ -71,17 +71,18 @@ class QuestionsTVC: UITableViewController {
     navigationItem.leftBarButtonItems = [editButton]
     
     addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTap))
-    navigationItem.rightBarButtonItems = [addButton]
+
 
     nextButton = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(nextTap))
-    
+
+    navigationItem.rightBarButtonItems = [addButton, nextButton]
   }
 
   func nextTap(){
 
     let videoRecorder = VideoRecorderVC()
     videoRecorder.questionQueue = questions
-
+    navigationController?.pushViewController(videoRecorder, animated: true)
 
   }
   
