@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Photos
 
 class QuestionsTVC: UITableViewController {
   
@@ -65,6 +66,37 @@ class QuestionsTVC: UITableViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    PHPhotoLibrary.requestAuthorization { (status) in
+
+      switch status{
+      case .authorized:
+        break
+      case .denied:
+        self.present({
+
+          let alert = UIAlertController(title: "Access denied", message: "This app has to have access to Photo Library", preferredStyle: .alert)
+          alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
+          return alert
+
+        }(), animated: true, completion: nil)
+
+      case .restricted:
+
+        self.present({
+
+          let alert = UIAlertController(title: "Access restricted", message: "This app has to have access to Photo Library", preferredStyle: .alert)
+          alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
+          return alert
+
+        }(), animated: true, completion: nil)
+
+      default:
+        break
+      }
+
+    }
+
     
     tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
     editButton = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editTap))
