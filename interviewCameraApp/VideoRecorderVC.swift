@@ -9,6 +9,7 @@
 import UIKit
 import AVFoundation
 import AVKit
+import Photos
 
 class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureFileOutputRecordingDelegate {
 
@@ -135,9 +136,37 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
         })
 
       case .finished:
+
         movieOutput.stopRecording()
+
         UIView.animate(withDuration: 1, animations: { 
           self.questionOverlayView.layer.opacity = 0
+        }, completion: { (_) in
+          PHPhotoLibrary.shared().saveVideoToCameraRoll(videoURL: self.getDocumentsDirectory().appendingPathComponent("video.mov"), completion: { (status) in
+
+            switch status {
+
+            case .successful:
+              self.present({
+
+                let alert = UIAlertController(title: "Success!", message: "The video has been saved to Camera Roll", preferredStyle: .alert)
+                alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
+                return alert
+
+              }(), animated: true, completion: nil)
+
+            case .failed(let message):
+              self.present({
+
+                let alert = UIAlertController(title: "Fail!", message: message, preferredStyle: .alert)
+                alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
+                return alert
+                
+              }(), animated: true, completion: nil)
+              
+            }
+            
+          })
         })
 
       default:
