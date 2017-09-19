@@ -28,19 +28,86 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
   var questionQueue: [String]!
   var actionButton: CustomButton!
 
+  var previewView: UIView!
+  var overlayView: UIView!
+
   var status = RecordingStatus.idle {
     didSet {
-      print(status)
+      switch status {
+      case .begin:
+
+        for item in overlayView.subviews {
+          item.removeFromSuperview()
+        }
+
+        let counterLabel = UILabel()
+        counterLabel.frame = CGRect(x: 0, y: 0, width: 100, height: 200)
+        counterLabel.textColor = UIColor.white
+        counterLabel.font = UIFont.boldSystemFont(ofSize: 50)
+        counterLabel.textAlignment = .center
+        overlayView.addSubview(counterLabel)
+        counterLabel.center = overlayView.center
+
+        UIView.transition(with: counterLabel,
+                          duration: 0.8,
+                          options: .transitionCrossDissolve,
+                          animations: { 
+                            counterLabel.text = "3"
+        },
+                          completion: { _ in
+                            UIView.transition(with: counterLabel,
+                                              duration: 0.8,
+                                              options: .transitionCrossDissolve,
+                                              animations: {
+                                                counterLabel.text = "2"
+                            },
+                                              completion: { _ in
+                                                UIView.transition(with: counterLabel,
+                                                                  duration: 0.8,
+                                                                  options: .transitionCrossDissolve,
+                                                                  animations: {
+                                                                    counterLabel.text = "1"
+                                                },
+                                                                  completion: { _ in
+                                                                    
+                                                                    UIView.animate(withDuration: 0.8, animations: { 
+                                                                      self.overlayView.layer.opacity = 0
+                                                                    }, completion: { _ in
+
+                                                                      for item in self.overlayView.subviews {
+                                                                        item.removeFromSuperview()
+                                                                      }
+                                                                      self.overlayView.removeFromSuperview()
+
+                                                                    })
+                                                })
+                            })
+        })
+
+      case .recording:
+
+        movieOutput.startRecording(toOutputFileURL: getDocumentsDirectory().appendingPathComponent("video.mov"),
+                                   recordingDelegate: self)
+
+      default:
+        break
+      }
     }
   }
 
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    previewView = UIView()
+    previewView.frame = view.frame
+    view.addSubview(previewView)
+    view.sendSubview(toBack: previewView)
+
     prepareCamera()
 
     actionButton = CustomButton(frame: CGRect.init(x: 0, y: 0, width: 150, height: 40))
     actionButton.center.x = view.center.x
-    actionButton.center.y = view.bounds.height - 100
+    actionButton.center.y = view.bounds.height - 60
     actionButton.setTitle("Begin", for: .normal)
     actionButton.cornerRadius = 20
     actionButton.borderWidth = 1
@@ -50,13 +117,42 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
     view.addSubview(actionButton)
     view.bringSubview(toFront: actionButton)
 
+    overlayView = UIView(frame: view.frame)
+    overlayView.backgroundColor = UIColor.black
+    overlayView.alpha = 0.5
+    view.insertSubview(overlayView, belowSubview: actionButton)
 
+    overlayView.addSubview({
+      let label = UILabel()
 
+      label.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 60)
+      label.center = view.center
+      label.textColor = UIColor.white
+      label.text = "Press Begin when ready"
+      label.textAlignment = .center
+      label.font = UIFont.boldSystemFont(ofSize: 24)
+      label.numberOfLines = 0
+
+      return label
+      }())
   }
 
   func actionButtonTap(){
-    print("!!!")
-    status = .begin
+
+    switch status {
+    case .idle:
+      status = .begin
+    default:
+      break
+    }
+
+  }
+
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+
+
+
   }
 
   override func viewDidAppear(_ animated: Bool) {
@@ -64,15 +160,10 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
 
     navigationController?.setNavigationBarHidden(true, animated: true)
 
-    addObserver(self, forKeyPath: "self.status", options: [.new], context: nil)
+
 
   }
 
-  override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-    if keyPath == "self.status" {
-      print("@@@@@@")
-    }
-  }
 
 
   func prepareCamera() {
@@ -106,14 +197,14 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
     if let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession) {
 
       self.previewLayer = previewLayer
-      let preview = UIView()
-      preview.frame = view.frame
-      view.addSubview(preview)
-      view.sendSubview(toBack: preview)
-      preview.layer.addSublayer(self.previewLayer)
+//      let preview = UIView()
+//      preview.frame = view.frame
+//      view.addSubview(preview)
+//      view.sendSubview(toBack: preview)
+      previewView.layer.addSublayer(self.previewLayer)
 
       //      view.layer.addSublayer(self.previewLayer)
-      self.previewLayer.frame = preview.layer.frame
+      self.previewLayer.frame = previewView.layer.frame
       captureSession.startRunning()
 
       //      let dataOutput = AVCaptureVideoDataOutput()
@@ -141,8 +232,10 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
 
       captureSession.commitConfiguration()
 
-      movieOutput.startRecording(toOutputFileURL: getDocumentsDirectory().appendingPathComponent("video.mov"),
-                                 recordingDelegate: self)
+
+//MARK: Start of recording
+//      movieOutput.startRecording(toOutputFileURL: getDocumentsDirectory().appendingPathComponent("video.mov"),
+//                                 recordingDelegate: self)
 
     }
 
