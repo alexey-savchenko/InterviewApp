@@ -16,6 +16,7 @@ class QuestionsTVC: UITableViewController {
   
   var editButton: UIBarButtonItem!
   var addButton: UIBarButtonItem!
+  var nextButton: UIBarButtonItem!
   
   
   var isInEditingMode = false {
@@ -71,7 +72,17 @@ class QuestionsTVC: UITableViewController {
     
     addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTap))
     navigationItem.rightBarButtonItems = [addButton]
+
+    nextButton = UIBarButtonItem(barButtonSystemItem: .camera, target: self, action: #selector(nextTap))
     
+  }
+
+  func nextTap(){
+
+    let videoRecorder = VideoRecorderVC()
+    videoRecorder.questionQueue = questions
+
+
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -83,9 +94,7 @@ class QuestionsTVC: UITableViewController {
   
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
-    
-    
-    
+
   }
   
   
@@ -103,11 +112,9 @@ class QuestionsTVC: UITableViewController {
   
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    // #warning Incomplete implementation, return the number of rows
     return questions.count
   }
-  
-  
+
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
     
@@ -115,13 +122,9 @@ class QuestionsTVC: UITableViewController {
     cell.selectionStyle = .none
     return cell
   }
-  
-  
-  
-  // Override to support editing the table view.
+
   override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
     if editingStyle == .delete {
-      // Delete the row from the data source
       questions.remove(at: indexPath.row)
       tableView.deleteRows(at: [indexPath], with: .fade)
     }
