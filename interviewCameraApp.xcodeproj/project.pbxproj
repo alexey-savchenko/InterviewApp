@@ -82,20 +82,60 @@
 		8069283A1F703CA9001C576A /* interviewCameraApp */ = {
 			isa = PBXGroup;
 			children = (
-				8069283B1F703CA9001C576A /* AppDelegate.swift */,
-				8069283D1F703CA9001C576A /* VideoRecorderVC.swift */,
-				8069283F1F703CA9001C576A /* Main.storyboard */,
+				8075851C1F72B6AE0085A80B /* Extensions */,
+				8075851B1F72B6A70085A80B /* Models */,
+				8075851A1F72B69C0085A80B /* Views */,
+				807585191F72B67D0085A80B /* Supporting Files */,
+				807585181F72B6640085A80B /* ViewControllers */,
 				806928451F703CA9001C576A /* Assets.xcassets */,
-				0289C8231F71161300E2C26E /* CustomButton.swift */,
-				806928471F703CA9001C576A /* LaunchScreen.storyboard */,
-				8069284A1F703CA9001C576A /* Info.plist */,
 				806928421F703CA9001C576A /* interviewCameraApp.xcdatamodeld */,
-				806928501F70F157001C576A /* QuestionsTVC.swift */,
-				0289C8251F712EDE00E2C26E /* FileManagerExtensions.swift */,
-				0289C8271F71320D00E2C26E /* PhotoLibraryExtensions.swift */,
-				0289C8291F7132B400E2C26E /* ProcessCompletionStatus.swift */,
 			);
 			path = interviewCameraApp;
+			sourceTree = "<group>";
+		};
+		807585181F72B6640085A80B /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				8069283D1F703CA9001C576A /* VideoRecorderVC.swift */,
+				806928501F70F157001C576A /* QuestionsTVC.swift */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		807585191F72B67D0085A80B /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				8069283B1F703CA9001C576A /* AppDelegate.swift */,
+				8069283F1F703CA9001C576A /* Main.storyboard */,
+				806928471F703CA9001C576A /* LaunchScreen.storyboard */,
+				8069284A1F703CA9001C576A /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		8075851A1F72B69C0085A80B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				0289C8231F71161300E2C26E /* CustomButton.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		8075851B1F72B6A70085A80B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				0289C8291F7132B400E2C26E /* ProcessCompletionStatus.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		8075851C1F72B6AE0085A80B /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				0289C8251F712EDE00E2C26E /* FileManagerExtensions.swift */,
+				0289C8271F71320D00E2C26E /* PhotoLibraryExtensions.swift */,
+			);
+			name = Extensions;
 			sourceTree = "<group>";
 		};
 		A92FBCA37CF69165CE4678DF /* Frameworks */ = {
