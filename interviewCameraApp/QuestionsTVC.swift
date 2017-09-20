@@ -24,7 +24,7 @@ class QuestionsTVC: UITableViewController {
     
     didSet {
       
-      if isInEditingMode {
+      if isInEditingMode == true {
         
         tableView.setEditing(false, animated: true)
         editButton.title = "Edit"

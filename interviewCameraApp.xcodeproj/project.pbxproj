@@ -19,6 +19,7 @@
 		806928461F703CA9001C576A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 806928451F703CA9001C576A /* Assets.xcassets */; };
 		806928491F703CA9001C576A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 806928471F703CA9001C576A /* LaunchScreen.storyboard */; };
 		806928511F70F157001C576A /* QuestionsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 806928501F70F157001C576A /* QuestionsTVC.swift */; };
+		807A356E1F72DA7500C7ABB7 /* VideoEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 807A356D1F72DA7500C7ABB7 /* VideoEditor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		806928481F703CA9001C576A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8069284A1F703CA9001C576A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		806928501F70F157001C576A /* QuestionsTVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionsTVC.swift; sourceTree = "<group>"; };
+		807A356D1F72DA7500C7ABB7 /* VideoEditor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoEditor.swift; sourceTree = "<group>"; };
 		D21B5109857A158CA135B5ED /* Pods-interviewCameraApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-interviewCameraApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-interviewCameraApp/Pods-interviewCameraApp.release.xcconfig"; sourceTree = "<group>"; };
 		D3FA13647E24C8DBF087ED9F /* Pods-interviewCameraApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-interviewCameraApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-interviewCameraApp/Pods-interviewCameraApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -85,8 +87,8 @@
 				8075851C1F72B6AE0085A80B /* Extensions */,
 				8075851B1F72B6A70085A80B /* Models */,
 				8075851A1F72B69C0085A80B /* Views */,
-				807585191F72B67D0085A80B /* Supporting Files */,
 				807585181F72B6640085A80B /* ViewControllers */,
+				807585191F72B67D0085A80B /* Supporting Files */,
 				806928451F703CA9001C576A /* Assets.xcassets */,
 				806928421F703CA9001C576A /* interviewCameraApp.xcdatamodeld */,
 			);
@@ -125,6 +127,7 @@
 			isa = PBXGroup;
 			children = (
 				0289C8291F7132B400E2C26E /* ProcessCompletionStatus.swift */,
+				807A356D1F72DA7500C7ABB7 /* VideoEditor.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -277,6 +280,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				806928441F703CA9001C576A /* interviewCameraApp.xcdatamodeld in Sources */,
+				807A356E1F72DA7500C7ABB7 /* VideoEditor.swift in Sources */,
 				806928511F70F157001C576A /* QuestionsTVC.swift in Sources */,
 				8069283E1F703CA9001C576A /* VideoRecorderVC.swift in Sources */,
 				0289C82A1F7132B400E2C26E /* ProcessCompletionStatus.swift in Sources */,
