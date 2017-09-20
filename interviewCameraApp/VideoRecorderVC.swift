@@ -139,34 +139,67 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
 
         movieOutput.stopRecording()
 
-        UIView.animate(withDuration: 1, animations: { 
+        UIView.animate(withDuration: 1, animations: {
           self.questionOverlayView.layer.opacity = 0
         }, completion: { (_) in
-          PHPhotoLibrary.shared().saveVideoToCameraRoll(videoURL: self.getDocumentsDirectory().appendingPathComponent("video.mov"), completion: { (status) in
 
-            switch status {
 
-            case .successful:
-              self.present({
+          self.present({
 
-                let alert = UIAlertController(title: "Success!", message: "The video has been saved to Camera Roll", preferredStyle: .alert)
-                alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
-                return alert
+            let alert = UIAlertController(title: "Save video", message: "Recorded video will be saved to Photo Library", preferredStyle: .alert)
+            alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: { (_) in
 
-              }(), animated: true, completion: nil)
+              //MARK: Saving of video
+              PHPhotoLibrary.shared().saveVideoToCameraRoll(videoURL: self.getDocumentsDirectory().appendingPathComponent("video.mov"), completion: { (status) in
 
-            case .failed(let message):
-              self.present({
+                switch status {
 
-                let alert = UIAlertController(title: "Fail!", message: message, preferredStyle: .alert)
-                alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
-                return alert
-                
-              }(), animated: true, completion: nil)
-              
-            }
-            
-          })
+                case .successful:
+                  self.present({
+
+                    let alert = UIAlertController(title: "Success!", message: "The video has been saved to Camera Roll", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
+                    return alert
+
+                  }(), animated: true, completion: {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: { 
+                      self.navigationController?.popToRootViewController(animated: true)
+                    })
+                  })
+
+                case .failed(let message):
+                  self.present({
+
+                    let alert = UIAlertController(title: "Fail!", message: message, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
+                    return alert
+
+                  }(), animated: true, completion: {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                      self.navigationController?.popToRootViewController(animated: true)
+                    })
+                  })
+
+                }
+
+              })
+
+            }))
+
+            alert.addAction(UIAlertAction.init(title: "Cancel", style: .destructive, handler: { (_) in
+
+              FileManager.default.checkFileAndDeleteAtURL(self.getDocumentsDirectory().appendingPathComponent("video.mov"), completion: { 
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                  self.navigationController?.popToRootViewController(animated: true)
+                })
+              })
+
+            }))
+
+            return alert
+
+          }(), animated: true, completion: nil)
+
         })
 
       default:
@@ -243,7 +276,7 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
     questionLabel.font = UIFont.boldSystemFont(ofSize: 26)
     questionLabel.text = ""
     questionLabel.numberOfLines = 0
-//    questionLabel.layer.opacity = 0
+    //    questionLabel.layer.opacity = 0
     questionOverlayView.layer.opacity = 0
 
     view.insertSubview(questionOverlayView, belowSubview: actionButton)
@@ -392,8 +425,8 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
                fromConnections connections: [Any]!) {
     print("didStartRecordingToOutputFileAt")
   }
-
-
+  
+  
   func capture(_ captureOutput: AVCaptureFileOutput!,
                didFinishRecordingToOutputFileAt outputFileURL: URL!,
                fromConnections connections: [Any]!, error: Error!) {
@@ -410,6 +443,10 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
   
   func getDocumentsDirectory() -> URL{
     return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+  }
+
+  deinit {
+    print("\(self) deallocated")
   }
   
 }
