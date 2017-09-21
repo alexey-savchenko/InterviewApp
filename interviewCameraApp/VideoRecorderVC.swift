@@ -127,9 +127,9 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
           self.nextButton.layer.opacity = 1
         })
         
-        FileManager.default.checkFileAndDeleteAtURL(getDocumentsDirectory().appendingPathComponent("video.mov"),
+        FileManager.default.checkFileAndDeleteAtURL(FileManager.default.getDocumentsDirectory().appendingPathComponent("video.mov"),
                                                     completion: {
-                                                      self.movieOutput.startRecording(toOutputFileURL: self.getDocumentsDirectory().appendingPathComponent("video.mov"),
+                                                      self.movieOutput.startRecording(toOutputFileURL: FileManager.default.getDocumentsDirectory().appendingPathComponent("video.mov"),
                                                                                       recordingDelegate: self)
         })
         
@@ -142,16 +142,69 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
       case .finished:
         print(answerTimeWaypoints)
         movieOutput.stopRecording()
-        
-        let editor = VideoEditor()
-        editor.applyQuestionOverlayToVideoWithURL(self.getDocumentsDirectory().appendingPathComponent("video.mov"),
-                                                  questions: self.questionQueue,
-                                                  secondsWaypoints: self.answerTimeWaypoints,
-                                                  completion: { (status) in
-                                                    
-                                                    
-                                                    
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+          
+          let editor = VideoEditor()
+          
+          editor.applyQuestionOverlayToVideoWithURL(FileManager.default.getDocumentsDirectory().appendingPathComponent("video.mov"),
+                                                    questions: self.questionQueue,
+                                                    secondsWaypoints: self.answerTimeWaypoints,
+                                                    completion: { (status) in
+                                                      
+                                                      switch status {
+                                                      case .successful:
+                                                        PHPhotoLibrary.shared().saveVideoToCameraRoll(videoURL: FileManager.default.getDocumentsDirectory().appendingPathComponent("final.mov"), completion: { (status) in
+                                                          
+                                                          switch status {
+                                                            
+                                                          case .successful:
+                                                            self.present({
+                                                              
+                                                              let alert = UIAlertController(title: "Success!", message: "The video has been saved to Camera Roll", preferredStyle: .alert)
+                                                              alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
+                                                              return alert
+                                                              
+                                                            }(), animated: true, completion: {
+                                                              DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                                                                self.navigationController?.popToRootViewController(animated: true)
+                                                              })
+                                                            })
+                                                            
+                                                          case .failed(let message):
+                                                            self.present({
+                                                              
+                                                              let alert = UIAlertController(title: "Fail!", message: message, preferredStyle: .alert)
+                                                              alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
+                                                              return alert
+                                                              
+                                                            }(), animated: true, completion: {
+                                                              DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                                                                self.navigationController?.popToRootViewController(animated: true)
+                                                              })
+                                                            })
+                                                            
+                                                          }
+                                                          
+                                                        })
+                                                      case .failed(let message):
+                                                        self.present({
+                                                          
+                                                          let alert = UIAlertController(title: "Fail!", message: message, preferredStyle: .alert)
+                                                          alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
+                                                          return alert
+                                                          
+                                                        }(), animated: true, completion: {
+                                                          DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                                                            self.navigationController?.popToRootViewController(animated: true)
+                                                          })
+                                                        })
+
+                                                        
+                                                      }
+                                                      
+          })
         })
+
         
         //        UIView.animate(withDuration: 1, animations: {
         //          self.questionOverlayView.layer.opacity = 0
@@ -422,29 +475,6 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
     }
     
   }
-  
-  //  @IBAction func buttontap(_ sender: UIButton) {
-  //    movieOutput.stopRecording()
-  //    do {
-  //
-  //      print("Contents of Doc folder \(try FileManager.default.contentsOfDirectory(atPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!))")
-  //      if FileManager.default.fileExists(atPath: getDocumentsDirectory().appendingPathComponent("video.mov").path) {
-  //
-  //        let size = try! FileManager.default.attributesOfItem(atPath: getDocumentsDirectory().appendingPathComponent("video.mov").path)[FileAttributeKey.size] as! UInt64
-  //        print(size)
-  //
-  //
-  //      } else {
-  //
-  //        print("no file")
-  //
-  //      }
-  //    } catch {
-  //
-  //      print(error)
-  //
-  //    }
-  //  }
   
   func timerFired(_ timer: Timer) {
     
