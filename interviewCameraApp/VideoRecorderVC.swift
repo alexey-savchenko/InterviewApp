@@ -149,57 +149,57 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
           editor.applyQuestionOverlayToVideoWithURL(FileManager.default.getDocumentsDirectory().appendingPathComponent("video.mov"),
                                                     questions: self.questionQueue,
                                                     secondsWaypoints: self.answerTimeWaypoints,
-                                                    completion: { (status) in
+                                                    completion: { (status, url) in
                                                       
                                                       switch status {
                                                       case .successful:
-                                                        PHPhotoLibrary.shared().saveVideoToCameraRoll(videoURL: FileManager.default.getDocumentsDirectory().appendingPathComponent("final.mov"), completion: { (status) in
-                                                          
+                                                        PHPhotoLibrary.shared().saveVideoToCameraRoll(videoURL: url!, completion: { (status) in
+
                                                           switch status {
-                                                            
+
                                                           case .successful:
                                                             self.present({
-                                                              
+
                                                               let alert = UIAlertController(title: "Success!", message: "The video has been saved to Camera Roll", preferredStyle: .alert)
                                                               alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
                                                               return alert
-                                                              
+
                                                             }(), animated: true, completion: {
                                                               DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
                                                                 self.navigationController?.popToRootViewController(animated: true)
                                                               })
                                                             })
-                                                            
+
                                                           case .failed(let message):
                                                             self.present({
-                                                              
+
                                                               let alert = UIAlertController(title: "Fail!", message: message, preferredStyle: .alert)
                                                               alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
                                                               return alert
-                                                              
+
                                                             }(), animated: true, completion: {
                                                               DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
                                                                 self.navigationController?.popToRootViewController(animated: true)
                                                               })
                                                             })
-                                                            
+
                                                           }
-                                                          
+
                                                         })
                                                       case .failed(let message):
                                                         self.present({
-                                                          
+
                                                           let alert = UIAlertController(title: "Fail!", message: message, preferredStyle: .alert)
                                                           alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
                                                           return alert
-                                                          
+
                                                         }(), animated: true, completion: {
                                                           DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
                                                             self.navigationController?.popToRootViewController(animated: true)
                                                           })
                                                         })
 
-                                                        
+
                                                       }
                                                       
           })
