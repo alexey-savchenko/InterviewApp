@@ -43,7 +43,6 @@ class VideoEditor {
                           overlays: [CALayer],
                           size: CGSize) {
     
-    //    let overlay = overlayWith(_text: "TEEEEST", size: size)
     let parentLayer = CALayer()
     let videoLayer = CALayer()
     
@@ -191,15 +190,7 @@ class VideoEditor {
       overlays.append(overlay)
     }
     applyVideoEffectTo(mainCompositionInst, overlays: overlays, size: naturalSize)
-    
-    
-    //MARK: Apply single overlay
-    //    let overlay = overlayWith(questions.first!, size: naturalSize)
-    //
-    //    overlay.add(getFramesAnimation(beginTime: AVCoreAnimationBeginTimeAtZero, duration: 2), forKey: "fadeout")
-    //
-    //    applyVideoEffectTo(mainCompositionInst, overlays: [overlay], size: naturalSize)
-    
+
     let exportSession = AVAssetExportSession(asset: mixComposition, presetName: AVAssetExportPresetMediumQuality)!
     exportSession.videoComposition = mainCompositionInst
     exportSession.outputFileType = AVFileTypeQuickTimeMovie

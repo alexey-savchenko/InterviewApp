@@ -158,6 +158,7 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
         view.addSubview(activityContainer)
         questionOverlayView.removeFromSuperview()
         activity.startAnimating()
+
         //Rendering and saving
         DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
           
@@ -172,6 +173,7 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
                                                       }
                                                       switch status {
                                                       case .successful:
+                                                        //Save to Library
                                                         PHPhotoLibrary.shared().saveVideoToCameraRoll(videoURL: url!, completion: { (status) in
 
                                                           switch status {
@@ -218,105 +220,31 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
                                                           })
                                                         })
 
-
                                                       }
                                                       
           })
         })
 
-        
-        //        UIView.animate(withDuration: 1, animations: {
-        //          self.questionOverlayView.layer.opacity = 0
-        //        }, completion: { (_) in
-        //
-        //
-        //          self.present({
-        //
-        //            let alert = UIAlertController(title: "Save video", message: "Recorded video will be saved to Photo Library", preferredStyle: .alert)
-        //            alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: { (_) in
-        //
-        //              //MARK: Saving of video
-        //
-        //              let editor = VideoEditor()
-        //              editor.applyQuestionOverlayToVideoWithURL(self.getDocumentsDirectory().appendingPathComponent("video.mov"),
-        //                                                        questions: self.questionQueue,
-        //                                                        secondsWaypoints: self.answerTimeWaypoints,
-        //                                                        completion: { (status) in
-        //
-        //              })
-        //
-        //              PHPhotoLibrary.shared().saveVideoToCameraRoll(videoURL: self.getDocumentsDirectory().appendingPathComponent("video.mov"), completion: { (status) in
-        //
-        //                switch status {
-        //
-        //                case .successful:
-        //                  self.present({
-        //
-        //                    let alert = UIAlertController(title: "Success!", message: "The video has been saved to Camera Roll", preferredStyle: .alert)
-        //                    alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
-        //                    return alert
-        //
-        //                  }(), animated: true, completion: {
-        //                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-        //                      self.navigationController?.popToRootViewController(animated: true)
-        //                    })
-        //                  })
-        //
-        //                case .failed(let message):
-        //                  self.present({
-        //
-        //                    let alert = UIAlertController(title: "Fail!", message: message, preferredStyle: .alert)
-        //                    alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
-        //                    return alert
-        //
-        //                  }(), animated: true, completion: {
-        //                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-        //                      self.navigationController?.popToRootViewController(animated: true)
-        //                    })
-        //                  })
-        //
-        //                }
-        //
-        //              })
-        //
-        //            }))
-        //
-        //            alert.addAction(UIAlertAction.init(title: "Cancel", style: .destructive, handler: { (_) in
-        //
-        //              FileManager.default.checkFileAndDeleteAtURL(self.getDocumentsDirectory().appendingPathComponent("video.mov"), completion: {
-        //                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-        //                  self.navigationController?.popToRootViewController(animated: true)
-        //                })
-        //              })
-        //
-        //            }))
-        //
-        //            return alert
-        //
-        //          }(), animated: true, completion: nil)
-        //
-        //        })
-        
       default:
         break
       }
     }
   }
-  
+
   func setQuestionWithIndex(_ index: Int) {
-    
     questionLabel.text = questionQueue[index]
-    
   }
-  
+
   override func viewDidLoad() {
     super.viewDidLoad()
     
     previewView = UIView()
     previewView.frame = view.frame
+    previewView.tag = 101
+
     view.addSubview(previewView)
     view.sendSubview(toBack: previewView)
-    
+
     prepareCamera()
     
     actionButton = CustomButton(frame: CGRect.init(x: 0, y: 0, width: 150, height: 40))
@@ -337,6 +265,7 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
     view.insertSubview(overlayView, belowSubview: actionButton)
     
     overlayView.addSubview({
+
       let label = UILabel()
       
       label.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: 60)
@@ -348,6 +277,7 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
       label.numberOfLines = 0
       
       return label
+
       }())
     
     nextButton = CustomButton(frame: CGRect.init(x: view.bounds.width - 120, y: view.bounds.height - 60, width: 100, height: 40))
@@ -371,7 +301,7 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
     questionLabel.font = UIFont.boldSystemFont(ofSize: 26)
     questionLabel.text = ""
     questionLabel.numberOfLines = 0
-    //    questionLabel.layer.opacity = 0
+
     questionOverlayView.layer.opacity = 0
     
     view.insertSubview(questionOverlayView, belowSubview: actionButton)
@@ -413,9 +343,7 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
     super.viewDidAppear(animated)
     
     navigationController?.setNavigationBarHidden(true, animated: true)
-    
-    
-    
+
   }
   
   
@@ -426,79 +354,56 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
     
     if let availableDevices = AVCaptureDeviceDiscoverySession(deviceTypes: [.builtInWideAngleCamera],
                                                               mediaType: AVMediaTypeVideo,
-                                                              position: .front).devices{
+                                                              position: .front).devices {
       captureDevice = availableDevices.first!
       beginSession()
     }
     
   }
+
+
   
   func beginSession() {
     
     do {
+
       let captureDeviceInput = try AVCaptureDeviceInput(device: captureDevice)
       captureSession.addInput(captureDeviceInput)
-      //      AVCaptureDevice *audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
-      //      AVCaptureDeviceInput * audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioDevice error:nil];
-      //      [session addInput:audioInput]
+
       let audiodevice = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio)
       let audioinput = try AVCaptureDeviceInput(device: audiodevice)
       captureSession.addInput(audioinput)
+
     } catch {
+
       print(error.localizedDescription)
+
     }
     
     if let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession) {
       
       self.previewLayer = previewLayer
-      //      let preview = UIView()
-      //      preview.frame = view.frame
-      //      view.addSubview(preview)
-      //      view.sendSubview(toBack: preview)
+
       previewView.layer.addSublayer(self.previewLayer)
-      
-      //      view.layer.addSublayer(self.previewLayer)
+
       self.previewLayer.frame = previewView.layer.frame
+
       captureSession.startRunning()
-      
-      //      let dataOutput = AVCaptureVideoDataOutput()
-      //      dataOutput.videoSettings = [(kCVPixelBufferPixelFormatTypeKey as String): NSNumber.init(value: kCVPixelFormatType_32BGRA)]
-      //      dataOutput.alwaysDiscardsLateVideoFrames = true
-      //
-      //
-      //
-      //
-      //      if captureSession.canAddOutput(dataOutput) {
-      //
-      //        captureSession.addOutput(dataOutput)
-      //
-      //      }
-      //
-      //      captureSession.commitConfiguration()
-      //
-      //      let queue = DispatchQueue(label: "com.svch.queue")
-      //
-      //      dataOutput.setSampleBufferDelegate(self, queue: queue)
+
       movieOutput = AVCaptureMovieFileOutput()
+
       if captureSession.canAddOutput(movieOutput) {
         captureSession.addOutput(movieOutput)
       }
       
       captureSession.commitConfiguration()
-      
-      
-      //MARK: Start of recording
-      //      movieOutput.startRecording(toOutputFileURL: getDocumentsDirectory().appendingPathComponent("video.mov"),
-      //                                 recordingDelegate: self)
-      
+
     }
     
   }
   
   func timerFired(_ timer: Timer) {
-    
     timeElapsedSeconds += 1
-    
   }
   
   func capture(_ captureOutput: AVCaptureFileOutput!,
@@ -518,6 +423,7 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
   func capture(_ captureOutput: AVCaptureFileOutput!,
                didFinishRecordingToOutputFileAt outputFileURL: URL!,
                fromConnections connections: [Any]!, error: Error!) {
+
     print("didFinishRecordingToOutputFileAt")
     
     timer.invalidate()
