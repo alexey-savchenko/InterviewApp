@@ -5,11 +5,12 @@
 //  Created by Alexey Savchenko on 19.09.17.
 //  Copyright © 2017 svchdzgn. All rights reserved.
 //
-
+import Foundation
 import UIKit
 import Photos
+import MobileCoreServices
 
-class QuestionsTVC: UITableViewController {
+class QuestionsTVC: UITableViewController, UINavigationControllerDelegate {
   
   var questions = ["What is your favorite color?",
                    "What icecream do you like?",
@@ -18,7 +19,7 @@ class QuestionsTVC: UITableViewController {
   var editButton: UIBarButtonItem!
   var addButton: UIBarButtonItem!
   var nextButton: UIBarButtonItem!
-  
+  var libButton: UIBarButtonItem!
   
   var isInEditingMode = false {
     
@@ -96,11 +97,11 @@ class QuestionsTVC: UITableViewController {
       }
 
     }
-
+    libButton = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(libButtonTap))
     
     tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
     editButton = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editTap))
-    navigationItem.leftBarButtonItems = [editButton]
+    navigationItem.leftBarButtonItems = [editButton, libButton]
     
     addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTap))
 
@@ -110,6 +111,17 @@ class QuestionsTVC: UITableViewController {
     navigationItem.rightBarButtonItems = [addButton, nextButton]
   }
 
+  var imagePickerController = UIImagePickerController()
+  
+  func libButtonTap(){
+    
+    imagePickerController.sourceType = .savedPhotosAlbum
+    imagePickerController.delegate = self
+    imagePickerController.mediaTypes = [kUTTypeMovie as String]
+    present(imagePickerController, animated: true, completion: nil)
+    
+  }
+  
   func nextTap(){
 
     let videoRecorder = VideoRecorderVC()
@@ -163,4 +175,76 @@ class QuestionsTVC: UITableViewController {
     }
   }
   
+}
+
+class PickerDelegate : NSObject, UIImagePickerControllerDelegate{
+  
+  func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    
+  }
+}
+extension QuestionsTVC: UIImagePickerControllerDelegate {
+  
+  func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    let videoURL = info[UIImagePickerControllerMediaURL] as! URL
+    picker.dismiss(animated: true, completion: nil)
+    let edit = VideoEditor()
+    edit.applyQuestionOverlayToVideoWithURL(videoURL,
+                                            questions: ["Test1", "Test2","Test3","Test4"],
+                                            secondsWaypoints: [5, 10, 20, 30]) { (status, url) in
+                                              
+                                              switch status {
+                                              case .successful:
+                                                PHPhotoLibrary.shared().saveVideoToCameraRoll(videoURL: url!, completion: { (status) in
+                                                  
+                                                  switch status {
+                                                    
+                                                  case .successful:
+                                                    self.present({
+                                                      
+                                                      let alert = UIAlertController(title: "Success!", message: "The video has been saved to Camera Roll", preferredStyle: .alert)
+                                                      alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
+                                                      return alert
+                                                      
+                                                    }(), animated: true, completion: {
+                                                      DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                                                        self.navigationController?.popToRootViewController(animated: true)
+                                                      })
+                                                    })
+                                                    
+                                                  case .failed(let message):
+                                                    self.present({
+                                                      
+                                                      let alert = UIAlertController(title: "Fail!", message: message, preferredStyle: .alert)
+                                                      alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
+                                                      return alert
+                                                      
+                                                    }(), animated: true, completion: {
+                                                      DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                                                        self.navigationController?.popToRootViewController(animated: true)
+                                                      })
+                                                    })
+                                                    
+                                                  }
+                                                  
+                                                })
+                                              case .failed(let message):
+                                                self.present({
+                                                  
+                                                  let alert = UIAlertController(title: "Fail!", message: message, preferredStyle: .alert)
+                                                  alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
+                                                  return alert
+                                                  
+                                                }(), animated: true, completion: {
+                                                  DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                                                    self.navigationController?.popToRootViewController(animated: true)
+                                                  })
+                                                })
+                                                
+                                                
+                                              }
+                                              
+                                              
+    }
+  }
 }
