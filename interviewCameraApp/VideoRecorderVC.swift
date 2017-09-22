@@ -142,6 +142,23 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
       case .finished:
         print(answerTimeWaypoints)
         movieOutput.stopRecording()
+        
+        //Hide action button
+        self.actionButton.layer.opacity = 0
+        
+        let activityContainer = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
+        activityContainer.center = view.center
+        activityContainer.backgroundColor = UIColor.black
+        activityContainer.alpha = 0.5
+        activityContainer.layer.cornerRadius = 10
+        let activity = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+        activity.frame = activityContainer.bounds
+        activityContainer.addSubview(activity)
+        
+        view.addSubview(activityContainer)
+        questionOverlayView.removeFromSuperview()
+        activity.startAnimating()
+        //Rendering and saving
         DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
           
           let editor = VideoEditor()
@@ -150,7 +167,9 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
                                                     questions: self.questionQueue,
                                                     secondsWaypoints: self.answerTimeWaypoints,
                                                     completion: { (status, url) in
-                                                      
+                                                      DispatchQueue.main.async {
+                                                        activityContainer.removeFromSuperview()
+                                                      }
                                                       switch status {
                                                       case .successful:
                                                         PHPhotoLibrary.shared().saveVideoToCameraRoll(videoURL: url!, completion: { (status) in
