@@ -63,21 +63,33 @@ class VideoEditor {
     
   }
   
-  private func getFramesAnimation(beginTime: TimeInterval,
-                                  duration: TimeInterval) -> CABasicAnimation {
+  private func getFadeAnimation(beginTime: TimeInterval,
+                                  duration: TimeInterval) -> CAAnimation {
     
-    let animation = CABasicAnimation(keyPath: #keyPath(CALayer.opacity))
-    //MARK: Play with animation to achieve smooth transitions
-    animation.beginTime = beginTime
+    
+    let animation = CAKeyframeAnimation(keyPath: #keyPath(CALayer.opacity))
+    
+    animation.values = [0.5, 0.5, 0.5, 0.2, 0]
     animation.duration = duration
-    animation.fromValue = 0.5
-    animation.toValue = 0
-    animation.isAdditive = true
-    animation.fillMode = kCAFillModeRemoved
-//    animation.fillMode = kCAFillModeBoth
+    animation.beginTime = beginTime
     animation.isRemovedOnCompletion = false
+    animation.fillMode = kCAFillModeRemoved
+    animation.isAdditive = true
     
     return animation
+    
+//    //MARK: Smooth disappearance of overlay
+//    let animation = CABasicAnimation(keyPath: #keyPath(CALayer.opacity))
+//    animation.beginTime = beginTime
+//    animation.duration = duration
+//    animation.fromValue = 0.5
+//    animation.toValue = 0
+//    animation.isAdditive = true
+//    animation.fillMode = kCAFillModeRemoved
+////    animation.fillMode = kCAFillModeBoth
+//    animation.isRemovedOnCompletion = false
+//
+//    return animation
   }
   
   private func addAudioTrack(composition: AVMutableComposition, videoAsset: AVURLAsset) {
@@ -171,10 +183,10 @@ class VideoEditor {
       let overlay = overlayWith(item, size: naturalSize)
 
       if item == questions.first!{
-        let animation: CABasicAnimation = getFramesAnimation(beginTime: AVCoreAnimationBeginTimeAtZero, duration: Double(secondsWaypoints[index]) * 0.2)
+        let animation = getFadeAnimation(beginTime: AVCoreAnimationBeginTimeAtZero, duration: Double(secondsWaypoints[index]) * 0.2)
         overlay.add(animation, forKey: "fadeOut")
       } else {
-        let animation: CABasicAnimation = getFramesAnimation(beginTime: TimeInterval(secondsWaypoints[index - 1]), duration: Double(secondsWaypoints[index]) * 0.2)
+        let animation = getFadeAnimation(beginTime: TimeInterval(secondsWaypoints[index - 1]), duration: Double(secondsWaypoints[index]) * 0.2)
         overlay.add(animation, forKey: "fadeOut")
       }
       overlay.displayIfNeeded()
