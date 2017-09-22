@@ -123,7 +123,16 @@ class QuestionsTVC: UITableViewController, UINavigationControllerDelegate {
   }
   
   func nextTap(){
+    guard questions.count != 0 else {
+      self.present({
 
+        let alert = UIAlertController(title: "No questions!", message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction.init(title: "OK", style: .default, handler: nil))
+        return alert
+
+      }(), animated: true, completion: nil)
+      return
+    }
     let videoRecorder = VideoRecorderVC()
     videoRecorder.questionQueue = questions
     navigationController?.pushViewController(videoRecorder, animated: true)

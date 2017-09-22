@@ -121,11 +121,18 @@ class VideoRecorderVC: UIViewController, AVCaptureVideoDataOutputSampleBufferDel
         
       case .recording:
         
-        UIView.animate(withDuration: 0.5, animations: {
-          self.actionButton.layer.opacity = 0
-        }, completion: { (_) in
-          self.nextButton.layer.opacity = 1
-        })
+        if questionQueue.count > 1 {
+
+          UIView.animate(withDuration: 0.5, animations: {
+            self.actionButton.layer.opacity = 0
+          }, completion: { (_) in
+            self.nextButton.layer.opacity = 1
+          })
+
+        } else {
+
+          self.actionButton.setTitle("Finish", for: .normal)
+        }
         
         FileManager.default.checkFileAndDeleteAtURL(FileManager.default.getDocumentsDirectory().appendingPathComponent("video.mov"),
                                                     completion: {
