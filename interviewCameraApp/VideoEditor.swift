@@ -16,16 +16,17 @@ class VideoEditor {
     
     let containerLayer = CALayer()
     let textLayer = CATextLayer()
-    
-    containerLayer.frame = CGRect(x: 0, y: 0,
-                                  width: size.width,
-                                  height: size.height * 0.3)
+      containerLayer.frame = CGRect(origin: .zero, size: CGSize.init(width: size.width, height: size.height * 0.3))
+//    containerLayer.frame = CGRect(x: 0, y: 0,
+//                                  width: size.width,
+//                                  height: size.height * 0.3)
     
     textLayer.frame = CGRect(x: 20, y: 20, width: containerLayer.bounds.width - 40, height: containerLayer.bounds.height - 40)
 //    containerLayer.opacity = 0.5
     containerLayer.backgroundColor = UIColor.black.cgColor
     
     textLayer.string = text
+    textLayer.font = UIFont.boldSystemFont(ofSize: 26)
     textLayer.foregroundColor = UIColor.white.cgColor
     textLayer.isWrapped = true
     textLayer.truncationMode = kCATruncationNone
@@ -157,29 +158,33 @@ class VideoEditor {
     mainCompositionInst.instructions = [mainInstruction]
     mainCompositionInst.frameDuration = CMTimeMake(1, 30)
     
-    
+    //MARK: Apply several overlays
     var overlays = [CALayer]()
     
-//    for (index, item) in questions.enumerated() {
-//
-//      let overlay = overlayWith(item, size: naturalSize)
-//
-//      if item == questions.first!{
-//        let animation: CABasicAnimation = getFramesAnimation(beginTime: AVCoreAnimationBeginTimeAtZero, duration: 1)
-//        overlay.add(animation, forKey: "fadeOut")
-//      } else {
-//        let animation: CABasicAnimation = getFramesAnimation(beginTime: TimeInterval(secondsWaypoints[index - 1]) + 0.5, duration: 1)
-//        overlay.add(animation, forKey: "fadeOut")
-//      }
-//      overlay.displayIfNeeded()
+    for (index, item) in questions.enumerated() {
 
-//      overlays.append(overlay)
-//    }
-    let overlay = overlayWith(questions.first!, size: naturalSize)
+      let overlay = overlayWith(item, size: naturalSize)
+
+      if item == questions.first!{
+        let animation: CABasicAnimation = getFramesAnimation(beginTime: AVCoreAnimationBeginTimeAtZero, duration: Double(secondsWaypoints[index]) * 0.2)
+        overlay.add(animation, forKey: "fadeOut")
+      } else {
+        let animation: CABasicAnimation = getFramesAnimation(beginTime: TimeInterval(secondsWaypoints[index - 1]), duration: Double(secondsWaypoints[index]) * 0.2)
+        overlay.add(animation, forKey: "fadeOut")
+      }
+      overlay.displayIfNeeded()
+
+      overlays.append(overlay)
+    }
+    applyVideoEffectTo(mainCompositionInst, overlays: overlays, size: naturalSize)
     
-    overlay.add(getFramesAnimation(beginTime: AVCoreAnimationBeginTimeAtZero, duration: 2), forKey: "fadeout")
-//    applyVideoEffectTo(mainCompositionInst, overlays: overlays, size: naturalSize)
-    applyVideoEffectTo(mainCompositionInst, overlays: [overlay], size: naturalSize)
+    
+    //MARK: Apply single overlay
+//    let overlay = overlayWith(questions.first!, size: naturalSize)
+//
+//    overlay.add(getFramesAnimation(beginTime: AVCoreAnimationBeginTimeAtZero, duration: 2), forKey: "fadeout")
+//
+//    applyVideoEffectTo(mainCompositionInst, overlays: [overlay], size: naturalSize)
     
     let exportSession = AVAssetExportSession(asset: mixComposition, presetName: AVAssetExportPresetHighestQuality)!
     exportSession.videoComposition = mainCompositionInst
