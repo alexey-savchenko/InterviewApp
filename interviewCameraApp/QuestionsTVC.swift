@@ -19,7 +19,7 @@ class QuestionsTVC: UITableViewController, UINavigationControllerDelegate {
 //  var editButton: UIBarButtonItem!
   var addButton: UIBarButtonItem!
   var nextButton: UIBarButtonItem!
-  var libButton: UIBarButtonItem!
+//  var libButton: UIBarButtonItem!
   
   var isInEditingMode = false {
     
@@ -97,12 +97,12 @@ class QuestionsTVC: UITableViewController, UINavigationControllerDelegate {
       }
 
     }
-    libButton = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(libButtonTap))
+//    libButton = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(libButtonTap))
     
     tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
 //    editButton = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editTap))
 //    navigationItem.leftBarButtonItems = [editButton, libButton]
-    navigationItem.leftBarButtonItems = [libButton]
+//    navigationItem.leftBarButtonItems = [libButton]
     
     addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTap))
 

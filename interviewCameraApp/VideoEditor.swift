@@ -190,8 +190,8 @@ class VideoEditor {
       overlays.append(overlay)
     }
     applyVideoEffectTo(mainCompositionInst, overlays: overlays, size: naturalSize)
-
-    let exportSession = AVAssetExportSession(asset: mixComposition, presetName: AVAssetExportPresetMediumQuality)!
+    
+    let exportSession = AVAssetExportSession(asset: mixComposition, presetName: AVAssetExportPresetHighestQuality)!
     exportSession.videoComposition = mainCompositionInst
     exportSession.outputFileType = AVFileTypeQuickTimeMovie
     exportSession.outputURL = FileManager.default.getDocumentsDirectory().appendingPathComponent("final.mov")
