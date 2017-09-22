@@ -16,21 +16,18 @@ class VideoEditor {
     
     let containerLayer = CALayer()
     let textLayer = CATextLayer()
-      containerLayer.frame = CGRect(origin: .zero, size: CGSize.init(width: size.width, height: size.height * 0.3))
-//    containerLayer.frame = CGRect(x: 0, y: 0,
-//                                  width: size.width,
-//                                  height: size.height * 0.3)
-    
-    textLayer.frame = CGRect(x: 20, y: 20, width: containerLayer.bounds.width - 40, height: containerLayer.bounds.height - 40)
-//    containerLayer.opacity = 0.5
+
+    containerLayer.frame = CGRect(origin: CGPoint.init(x: 0, y: size.height * 0.7),
+                                  size: CGSize.init(width: size.width, height: size.height * 0.3))
+
+    textLayer.frame = CGRect(x: 20, y: 20,
+                             width: containerLayer.bounds.width - 40,
+                             height: containerLayer.bounds.height - 40)
+
     containerLayer.backgroundColor = UIColor.black.cgColor
     let attrString = NSMutableAttributedString(string: text, attributes: [NSForegroundColorAttributeName: UIColor.white,
                                                                           NSFontAttributeName: UIFont.boldSystemFont(ofSize: 99)])
-      textLayer.string = attrString
-//    textLayer.string = text
-    
-//    textLayer.font = UIFont.boldSystemFont(ofSize: 46)
-//    textLayer.contentsScale = UIScreen.main.scale
+    textLayer.string = attrString
     textLayer.foregroundColor = UIColor.white.cgColor
     textLayer.isWrapped = true
     textLayer.truncationMode = kCATruncationNone
@@ -64,7 +61,7 @@ class VideoEditor {
   }
   
   private func getFadeAnimation(beginTime: TimeInterval,
-                                  duration: TimeInterval) -> CAAnimation {
+                                duration: TimeInterval) -> CAAnimation {
     
     
     let animation = CAKeyframeAnimation(keyPath: #keyPath(CALayer.opacity))
@@ -78,18 +75,18 @@ class VideoEditor {
     
     return animation
     
-//    //MARK: Smooth disappearance of overlay
-//    let animation = CABasicAnimation(keyPath: #keyPath(CALayer.opacity))
-//    animation.beginTime = beginTime
-//    animation.duration = duration
-//    animation.fromValue = 0.5
-//    animation.toValue = 0
-//    animation.isAdditive = true
-//    animation.fillMode = kCAFillModeRemoved
-////    animation.fillMode = kCAFillModeBoth
-//    animation.isRemovedOnCompletion = false
-//
-//    return animation
+    //    //MARK: Smooth disappearance of overlay
+    //    let animation = CABasicAnimation(keyPath: #keyPath(CALayer.opacity))
+    //    animation.beginTime = beginTime
+    //    animation.duration = duration
+    //    animation.fromValue = 0.5
+    //    animation.toValue = 0
+    //    animation.isAdditive = true
+    //    animation.fillMode = kCAFillModeRemoved
+    ////    animation.fillMode = kCAFillModeBoth
+    //    animation.isRemovedOnCompletion = false
+    //
+    //    return animation
   }
   
   private func addAudioTrack(composition: AVMutableComposition, videoAsset: AVURLAsset) {
@@ -142,20 +139,20 @@ class VideoEditor {
     
     let videoTransform = videoAssetTrack.preferredTransform
     
-        if (videoTransform.a == 0 && videoTransform.b == 1.0 && videoTransform.c == -1.0 && videoTransform.d == 0) {
-          videoAssetOrientation = UIImageOrientation.right
-          isVideoAssetPortrait = true
-        }
-        if (videoTransform.a == 0 && videoTransform.b == -1.0 && videoTransform.c == 1.0 && videoTransform.d == 0) {
-          videoAssetOrientation =  UIImageOrientation.left
-          isVideoAssetPortrait = true;
-        }
-        if (videoTransform.a == 1.0 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == 1.0) {
-          videoAssetOrientation =  UIImageOrientation.up
-        }
-        if (videoTransform.a == -1.0 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == -1.0) {
-          videoAssetOrientation = UIImageOrientation.down
-        }
+    if (videoTransform.a == 0 && videoTransform.b == 1.0 && videoTransform.c == -1.0 && videoTransform.d == 0) {
+      videoAssetOrientation = UIImageOrientation.right
+      isVideoAssetPortrait = true
+    }
+    if (videoTransform.a == 0 && videoTransform.b == -1.0 && videoTransform.c == 1.0 && videoTransform.d == 0) {
+      videoAssetOrientation =  UIImageOrientation.left
+      isVideoAssetPortrait = true;
+    }
+    if (videoTransform.a == 1.0 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == 1.0) {
+      videoAssetOrientation =  UIImageOrientation.up
+    }
+    if (videoTransform.a == -1.0 && videoTransform.b == 0 && videoTransform.c == 0 && videoTransform.d == -1.0) {
+      videoAssetOrientation = UIImageOrientation.down
+    }
     
     videoLayerInstruction.setTransform(videoAssetTrack.preferredTransform, at: kCMTimeZero)
     videoLayerInstruction.setOpacity(0, at: videoAsset.duration)
@@ -197,11 +194,11 @@ class VideoEditor {
     
     
     //MARK: Apply single overlay
-//    let overlay = overlayWith(questions.first!, size: naturalSize)
-//
-//    overlay.add(getFramesAnimation(beginTime: AVCoreAnimationBeginTimeAtZero, duration: 2), forKey: "fadeout")
-//
-//    applyVideoEffectTo(mainCompositionInst, overlays: [overlay], size: naturalSize)
+    //    let overlay = overlayWith(questions.first!, size: naturalSize)
+    //
+    //    overlay.add(getFramesAnimation(beginTime: AVCoreAnimationBeginTimeAtZero, duration: 2), forKey: "fadeout")
+    //
+    //    applyVideoEffectTo(mainCompositionInst, overlays: [overlay], size: naturalSize)
     
     let exportSession = AVAssetExportSession(asset: mixComposition, presetName: AVAssetExportPresetMediumQuality)!
     exportSession.videoComposition = mainCompositionInst
