@@ -24,13 +24,18 @@ class VideoEditor {
     textLayer.frame = CGRect(x: 20, y: 20, width: containerLayer.bounds.width - 40, height: containerLayer.bounds.height - 40)
 //    containerLayer.opacity = 0.5
     containerLayer.backgroundColor = UIColor.black.cgColor
+    let attrString = NSMutableAttributedString(string: text, attributes: [NSForegroundColorAttributeName: UIColor.white,
+                                                                          NSFontAttributeName: UIFont.boldSystemFont(ofSize: 99)])
+      textLayer.string = attrString
+//    textLayer.string = text
     
-    textLayer.string = text
-    textLayer.font = UIFont.boldSystemFont(ofSize: 26)
+//    textLayer.font = UIFont.boldSystemFont(ofSize: 46)
+//    textLayer.contentsScale = UIScreen.main.scale
     textLayer.foregroundColor = UIColor.white.cgColor
     textLayer.isWrapped = true
     textLayer.truncationMode = kCATruncationNone
-    
+    textLayer.position = CGPoint(x: containerLayer.frame.width / 2, y: containerLayer.frame.height / 2)
+    textLayer.display()
     containerLayer.addSublayer(textLayer)
     
     return containerLayer
