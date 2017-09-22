@@ -16,7 +16,7 @@ class QuestionsTVC: UITableViewController, UINavigationControllerDelegate {
                    "What icecream do you like?",
                    "Where are you from?"]
   
-  var editButton: UIBarButtonItem!
+//  var editButton: UIBarButtonItem!
   var addButton: UIBarButtonItem!
   var nextButton: UIBarButtonItem!
   var libButton: UIBarButtonItem!
@@ -28,11 +28,11 @@ class QuestionsTVC: UITableViewController, UINavigationControllerDelegate {
       if isInEditingMode == true {
         
         tableView.setEditing(false, animated: true)
-        editButton.title = "Edit"
+//        editButton.title = "Edit"
       } else {
         
         tableView.setEditing(true, animated: true)
-        editButton.title = "Done"
+//        editButton.title = "Done"
         
       }
       
@@ -100,8 +100,9 @@ class QuestionsTVC: UITableViewController, UINavigationControllerDelegate {
     libButton = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(libButtonTap))
     
     tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-    editButton = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editTap))
-    navigationItem.leftBarButtonItems = [editButton, libButton]
+//    editButton = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(editTap))
+//    navigationItem.leftBarButtonItems = [editButton, libButton]
+    navigationItem.leftBarButtonItems = [libButton]
     
     addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTap))
 
